@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/django-ltree-demo
+    docker:
+      - image: circleci/python:3.6
+        environment:
+          PGHOST: localhost
+          PGUSER: postgres
+      - image: circleci/postgres:9.6
+        environment:
+          POSTGRES_USER: ubuntu
+          POSTGRES_DB: django_ltree_demo
+    steps:
+      - checkout
+      - run:
+          command: |
+            pip install -r requirements.txt
+            pip install -e .
+      - run:
+          command: |
+            pytest -v
