@@ -1,2 +1,6 @@
 Django<2.0
 psycopg2
+
+# for the tests
+pytest
+pytest-django
