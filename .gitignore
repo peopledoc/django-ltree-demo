@@ -1,0 +1,13 @@
+*.py[co]
+*.sw[po]
+*.egg*
+__pycache__
+.coverage
+build
+dist
+.DS_Store
+*.swp
+*~
+.tox
+.cache
+htmlcov
