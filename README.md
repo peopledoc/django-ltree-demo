@@ -11,12 +11,12 @@ Those libraries work fine at a small scale, but here at PeopleDoc we have
 encountered a lot of issues when using them at a bigger scale (tables with
 hundreds of thousands of rows and quite a lot of writings).
 
-It turns out that storing trees in a database a solved problem since a long
-time, at least with PostgreSQL. The
+It turns out that storing trees in a database has been a solved problem since
+a long time, at least with PostgreSQL. The
 [ltree](https://www.postgresql.org/docs/9.6/static/ltree.html) extension
-provides a convenient data structure, which is very fast on reads, and quite
-fast on writing. The algorithm used is very close to django-treebeard's
-materialized paths, but with all the power of PostgreSQL.
+provides a convenient data structure which is very fast on reads, and with
+almost no impact on writes. The algorithm used is very close to
+django-treebeard's materialized paths, but with all the power of PostgreSQL.
 
 The main downside of using ltree is that you have to maintain the materialized
 path yourself. It doesn't come with any tool to do it automatically.
@@ -65,16 +65,17 @@ SELECT * FROM category WHERE path <@ 'science.biology'
 
 ## The magic part: PostgreSQL triggers
 
-If you just add a ltree field to your model, you will have to keep the field
-up-to-date when inserting or updating instances.  We could do that with Django
+If you add a ltree field to your model, you will have to keep the field
+up-to-date when inserting or updating instances. We could do that with Django
 signals, but it turns out that PostgreSQL is far better for maintaining
 integrity & writing efficient code.
 
 Every time we insert or update a row, we can reconstruct its path by appending
-its code to the path of its parent. If the path changed, we'll also need to
-update the path of the children, which is a simple `UPDATE`.
+its code to the path of its parent. If the path has changed, we'll also need to
+update the path of the children, which can be written as a simple `UPDATE`
+query.
 
-This can be done easily with [PostgreSQL
+All that can be done easily with [PostgreSQL
 triggers](https://www.postgresql.org/docs/current/static/sql-createtrigger.html).
 You can find an implementation of those triggers in the file
 [`demo/categories/sql/triggers.sql`](/demo/categories/sql/triggers.sql).
@@ -112,5 +113,6 @@ In the demo, the following files are the most important:
 
 With a few lines a declarative, idiomatic Django code and ~50 lines of SQL we
 have implemented a fast and consistent solution for storing and querying trees.
+
 Sometimes it's good to delegate complicated data manipulation to the database
 instead of doing everything in Python :) .
