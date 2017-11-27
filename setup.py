@@ -6,7 +6,7 @@ DESCRIPTION = "A demo for manipulating trees in Django using PostgreSQL"
 LICENSE = u'MIT'
 NAME = 'django-ltree-demo'
 PACKAGES = ['demo']
-URL = 'https://github.com/novafloss/django-ltree-demo'
+URL = 'https://github.com/peopledoc/django-ltree-demo'
 VERSION = 1.0
 
 
